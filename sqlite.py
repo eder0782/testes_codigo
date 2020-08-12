@@ -12,7 +12,7 @@ con.execute(''' CREATE TABLE IF NOT EXISTS
 );''')
 
 con.commit()
-
+#teste
 cursor = con.cursor()
 
 def listar():
