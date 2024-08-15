@@ -16,12 +16,12 @@
       }
 
       function enviarFormulario(event) {
-        event.preventDefault();
+        event.preventDefault(); // Previne o comportamento padrão do formulário
         const valor1 = document.getElementById("valor1").value;
         const valor2 = document.getElementById("valor2").value;
 
         fetch("/calcular", {
-          // Certifique-se de que a rota é /calcular
+          // Verifique se a URL é '/calcular'
           method: "POST",
           headers: {
             "Content-Type": "application/json",
