@@ -7,6 +7,7 @@ import PySimpleGUI as sg
 sg.theme('DarkAmber')   # Add a touch of color
 # All the stuff inside your window.
 
+
 layout = [  [sg.Text('Valor 1'), sg.InputText(key=('login'),justification=('l'))],
             [sg.Text('Valor 2'), sg.InputText(key=('senha'),justification=('l'))],
             [sg.Text('Resultado',size=(100,2),justification=('c'))],

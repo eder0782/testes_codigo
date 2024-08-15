@@ -27,15 +27,31 @@ def close():
     
 
 def deletar(x):
+    try:
+        con.execute('Delete from usuario where id = ?',(x,))
+        con.commit()
+        print('Registro excluído com sucesso!')
+    except Exception as e:
+        print('Ocorreu o seguinte erro ao tentar excluir: '+str(e))
+
      
-    con.execute('Delete from usuario where id = ?',(x,))
-    con.commit()
-
-def update(id,nome):
-    cursor.execute('update usuario set nome=? where id = ?',(nome,id))
-    con.commit()
     
-
+def update(id,nome):
+    try:
+        cursor.execute('update usuario set nome=? where id = ?',(nome,id))
+        con.commit()
+        print('Registro atualizado com sucesso!')
+    except Exception as e:
+        print('Ocorreu o seguinte erro ao tentar Atualizar: '+str(e))
+    
+    
+def salvar(id,nome):
+    try: 
+        con.execute('Insert into usuario values(?,?)',(id,nome))
+        con.commit()
+        print('Registro salvo com sucesso')
+    except Exception as e:
+        print('Ocorreu o sruinte erro: '+str(e))
 
 while True:
     opcao =input('Digite: 1 para fazer novo cadastro, 2 para consultar, 3 para deletar,4 para atualizar, e 5 sair:')
@@ -44,8 +60,9 @@ while True:
     if opcao == '1':
         id =input('Digite a id para cadastrar:')
         nome = input('Digite o nome:')
-        con.execute('Insert into usuario values(?,?)',(id,nome))
-        con.commit()
+        # con.execute('Insert into usuario values(?,?)',(id,nome))
+        # con.commit()
+        salvar(id,nome)
         continue
     elif opcao == '2':
         listar()
