@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CRUD de Usuários</title>
+    <!-- Bootstrap CSS -->
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      /* Estilo para o botão flutuante */
+      .float-button {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100;
+      }
+      .table-responsive {
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body class="bg-light">
+    <div class="container">
+      <h1 class="text-center mt-4">CRUD DE USUÁRIOS</h1>
+
+      <!-- Tabela de usuários -->
+      <div class="table-responsive">
+        <table class="table table-bordered table-striped text-center">
+          <thead class="table-dark">
+            <tr>
+              <th>CÓDIGO</th>
+              <th>NOME</th>
+              <th>AÇÕES</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaUsuarios">
+            <!-- Os usuários serão listados aqui -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Botão flutuante para criar novo usuário -->
+      <button
+        type="button"
+        class="btn btn-primary float-button"
+        data-bs-toggle="modal"
+        data-bs-target="#modalCriar"
+      >
+        Criar Usuário
+      </button>
+    </div>
+
+    <!-- Modal Criar Usuário -->
+    <div
+      class="modal fade"
+      id="modalCriar"
+      tabindex="-1"
+      aria-labelledby="modalCriarLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalCriarLabel">Criar Novo Usuário</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="idCriar" class="form-label">Código</label>
+              <input
+                type="text"
+                class="form-control"
+                id="idCriar"
+                placeholder="Digite o Código"
+              />
+            </div>
+            <div class="mb-3">
+              <label for="nomeCriar" class="form-label">Nome</label>
+              <input
+                type="text"
+                class="form-control"
+                id="nomeCriar"
+                placeholder="Digite o Nome"
+              />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-primary" id="btnSalvarUsuario">
+              Salvar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Editar Usuário -->
+    <div
+      class="modal fade"
+      id="modalEditar"
+      tabindex="-1"
+      aria-labelledby="modalEditarLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalEditarLabel">Editar Usuário</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label for="idEditar" class="form-label">Código</label>
+              <input type="text" class="form-control" id="idEditar" readonly />
+            </div>
+            <div class="mb-3">
+              <label for="nomeEditar" class="form-label">Nome</label>
+              <input type="text" class="form-control" id="nomeEditar" />
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              id="btnAtualizarUsuario"
+            >
+              Salvar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Confirmar Exclusão -->
+    <div
+      class="modal fade"
+      id="modalExcluir"
+      tabindex="-1"
+      aria-labelledby="modalExcluirLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="modalExcluirLabel">Excluir Usuário</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <p>
+              Tem certeza que deseja excluir este usuário? Esta ação não pode
+              ser desfeita.
+            </p>
+            <input type="hidden" id="idExcluir" />
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button type="button" class="btn btn-danger" id="btnDeletarUsuario">
+              Excluir
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script>
+      // Carregar usuários ao carregar a página
+      window.onload = function () {
+        listarUsuarios();
+      };
+
+      // Função para listar usuários
+      function listarUsuarios() {
+        fetch("/listar")
+          .then((response) => response.json())
+          .then((data) => {
+            let tabelaUsuarios = document.getElementById("tabelaUsuarios");
+            tabelaUsuarios.innerHTML = "";
+            data.forEach((usuario) => {
+              let row = `<tr>
+                    <td>${usuario.ID}</td>
+                    <td>${usuario.NOME.toUpperCase()}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm" onclick="abrirModalEditar('${
+                          usuario.ID
+                        }', '${usuario.NOME}')">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="abrirModalExcluir('${
+                          usuario.ID
+                        }')">Excluir</button>
+                    </td>
+                </tr>`;
+              tabelaUsuarios.innerHTML += row;
+            });
+          });
+      }
+
+      // Função para salvar novo usuário
+      function salvarUsuario() {
+        const id = document.getElementById("idCriar").value;
+        const nome = document.getElementById("nomeCriar").value;
+
+        fetch("/salvar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: id, nome: nome }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message) {
+              listarUsuarios();
+              const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalCriar")
+              );
+              modal.hide();
+            }
+          });
+      }
+
+      // Função para abrir o modal de edição com os dados do usuário
+      function abrirModalEditar(id, nome) {
+        document.getElementById("idEditar").value = id;
+        document.getElementById("nomeEditar").value = nome;
+        const modal = new bootstrap.Modal(
+          document.getElementById("modalEditar")
+        );
+        modal.show();
+      }
+
+      // Função para atualizar usuário
+      function atualizarUsuario() {
+        const id = document.getElementById("idEditar").value;
+        const nome = document.getElementById("nomeEditar").value;
+
+        fetch("/update", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: id, nome: nome }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message) {
+              listarUsuarios();
+              const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalEditar")
+              );
+              modal.hide();
+            }
+          });
+      }
+
+      // Função para abrir o modal de exclusão
+      function abrirModalExcluir(id) {
+        document.getElementById("idExcluir").value = id;
+        const modal = new bootstrap.Modal(
+          document.getElementById("modalExcluir")
+        );
+        modal.show();
+      }
+
+      // Função para excluir usuário
+      function deletarUsuario() {
+        const id = document.getElementById("idExcluir").value;
+
+        fetch("/deletar", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ id: id }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.message) {
+              listarUsuarios();
+              const modal = bootstrap.Modal.getInstance(
+                document.getElementById("modalExcluir")
+              );
+              modal.hide();
+            }
+          });
+      }
+
+      // Associar funções aos botões
+      document
+        .getElementById("btnSalvarUsuario")
+        .addEventListener("click", salvarUsuario);
+      document
+        .getElementById("btnAtualizarUsuario")
+        .addEventListener("click", atualizarUsuario);
+      document
+        .getElementById("btnDeletarUsuario")
+        .addEventListener("click", deletarUsuario);
+    </script>
+  </body>
+</html>
